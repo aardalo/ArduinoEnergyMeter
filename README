@@ -13,7 +13,6 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 Hardware
 --------
-
 	Arduino Uno R3				http://arduino.cc/en/Main/ArduinoBoardUno
 	Wireless Proto Shield		http://arduino.cc/en/Main/ArduinoWirelessProtoShield
 	DFrobots SD module			http://www.dfrobot.com/index.php?route=product/product&filter_name=sd%20breakout&product_id=163
@@ -29,4 +28,10 @@ Hardware
 
 Revision History
 ================
-01.02.2012		Initial version - experimental level - all input highly appreciated
+01.02.2012	Added web pages in php using Google Chart. Inspired by code created by https://github.com/HNygard
+01.02.2012	Initial version - experimental level - all input highly appreciated
+
+Known issues
+============
+meta refresh is not optimal - needs to work without reload
+multiple reads is hogging memory and cpu on my LAMP server (Synology 411j) - should only parse new stuff since last load and update graphs
