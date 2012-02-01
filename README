@@ -4,7 +4,7 @@ https://github.com/aardalo/ArduinoEnergyMeter
 
 Author
 ------
-Øyvind Aardal
+Ã˜yvind Aardal
 
 License
 -------
@@ -14,11 +14,11 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 Hardware
 --------
 
-	Arduino Uno R3				http://arduino.cc/en/Main/ArduinoBoardUno
+	Arduino Uno R3			http://arduino.cc/en/Main/ArduinoBoardUno
 	Wireless Proto Shield		http://arduino.cc/en/Main/ArduinoWirelessProtoShield
-	DFrobots SD module			http://www.dfrobot.com/index.php?route=product/product&filter_name=sd%20breakout&product_id=163
-	TSL257-LF					http://www.taosinc.com/ProductDetails.aspx?id=73
-	Xbee 1mw 802.15.4			http://www.sparkfun.com/products/8665
+	DFrobots SD module		http://www.dfrobot.com/index.php?route=product/product&filter_name=sd%20breakout&product_id=163
+	TSL257-LF			http://www.taosinc.com/ProductDetails.aspx?id=73
+	Xbee 1mw 802.15.4		http://www.sparkfun.com/products/8665
 
 	
 ### Wiring
