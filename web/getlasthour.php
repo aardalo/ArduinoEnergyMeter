@@ -14,8 +14,8 @@
     }
 	fclose($fp);
 	
-	$factor = 24;
-	$limit = $row - $factor * 120;
+	$factor = 1;						// Loggfilen har data hvert 5 sek
+	$limit = $row - $factor * 120*24;		// Leser 120 linjer med faktor intervall, 24x120x5 = 4 timer
 	
 	for ($i = $limit; $i < $row; $i = $i + $factor){
 		$ts = date("H:i",$tid - ($row - $i) * 5);
