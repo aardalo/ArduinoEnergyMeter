@@ -13,11 +13,11 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 Hardware
 --------
-	Arduino Uno R3				http://arduino.cc/en/Main/ArduinoBoardUno
-	Wireless Proto Shield		http://arduino.cc/en/Main/ArduinoWirelessProtoShield
-	DFrobots SD module			http://www.dfrobot.com/index.php?route=product/product&filter_name=sd%20breakout&product_id=163
-	TSL257-LF					http://www.taosinc.com/ProductDetails.aspx?id=73
-	Xbee 1mw 802.15.4			http://www.sparkfun.com/products/8665
+	Arduino Uno R3		http://arduino.cc/en/Main/ArduinoBoardUno
+	Wireless Proto Shield	http://arduino.cc/en/Main/ArduinoWirelessProtoShield
+	DFrobots SD module	http://www.dfrobot.com/index.php?route=product/product&filter_name=sd%20breakout&product_id=163
+	TSL257-LF		http://www.taosinc.com/ProductDetails.aspx?id=73
+	Xbee 1mw 802.15.4	http://www.sparkfun.com/products/8665
 
 	
 ### Wiring
@@ -28,10 +28,11 @@ Hardware
 
 Revision History
 ================
+05.02.2012	Revised web pages to dynamically update without reload - still rough but closer...
 01.02.2012	Added web pages in php using Google Chart. Inspired by code created by https://github.com/HNygard
 01.02.2012	Initial version - experimental level - all input highly appreciated
 
 Known issues
 ============
-meta refresh is not optimal - needs to work without reload
+when computer sleeps and resumes, page should reload to catch up the line-graph - now it just continues
 multiple reads is hogging memory and cpu on my LAMP server (Synology 411j) - should only parse new stuff since last load and update graphs
