@@ -11,8 +11,16 @@ License
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 
-Hardware
---------
+Hardware [SENS]
+---------------
+Sensor-device with "light-to-voltage" converter used to count pulses on a
+energy meter similar to this:
+http://bilde.digi.no/overv%E5k+str%F8mforbruket+i+huset+fra+pc-en.jpg?o=2720923&w=698&h=0&ee=1220967635
+The TSL257 is fastened over the impulse diode with "McGyver tape" to avoid
+stray light and to ensure secure fastening. The Arduino and Xbee is located
+outside the "fusebox" and a regular 4-wire telephone cable is used to connect
+the TSL257 to the Arduino (3 wires).
+
 	Arduino Uno R3		
 	http://arduino.cc/en/Main/ArduinoBoardUno
 	
@@ -29,22 +37,56 @@ Hardware
 	http://www.sparkfun.com/products/8665
 
 	
-### Wiring
+### Wiring of sensor module [SENS]
 	TSL257 OUT to Arduino pin 3
 	SD module as described in DFR0071_Wiring.JPG
 	Xbee mounted on Wireless Proto Shield
 	
+Hardware [ENGW]
+---------------
+	Arduino Uno R3		
+	http://arduino.cc/en/Main/ArduinoBoardUno
+	
+	Wireless Proto Shield
+	http://arduino.cc/en/Main/ArduinoWirelessProtoShield
 
+	Xbee 1mw 802.15.4
+	http://www.sparkfun.com/products/8665
+
+	Arduino Ethernet Shield
+	http://arduino.cc/en/Main/ArduinoEthernetShield
+	
+### Wiring of xbee to ethernet gw [ENGW]
+	Ethernet Shield and Xbee Shield stacked
+
+Hardware [LAMP]
+---------------
+Any LAMP server - could be a Synology NAS (my setup) or e.g. a Amazon EC2
+server (small ... free for a year). 
+	
 Revision History
 ================
+29.02.2012	Added MySQL support. web/sql*.php is called from index.php
+			Added Xbee to Ethernet GW
 05.02.2012	Revised web pages to dynamically update without reload - still rough 
           	but closer...
 01.02.2012	Added web pages in php using Google Chart. Inspired by code created 
           	by https://github.com/HNygard
 01.02.2012	Initial version - experimental level - all input highly appreciated
 
+To-do
+=====
+*	Revise SENS to send "correct" syntax to the GW. Now the transform to save
+	data to the MySQL db is done in the GW and it should be transparent.
+*	Revise SENS to employ /utc/ time broadcast by ENGW and timestamp reports
+*	Really need to add DHCP and DNS support for the GW to avoid hardcoded IPs
+*	lots more...
+
 Known issues
 ============
-when computer sleeps and resumes, page should reload to catch up the line-graph - now 
-it just continues multiple reads is hogging memory and cpu on my LAMP server 
-(Synology 411j) - should only parse new stuff since last load and update graphs
+*	When computer sleeps and resumes, page should reload to catch up the line-
+	graph - now it just continues multiple reads is hogging memory and cpu on 
+	my LAMP server (Synology 411j) - should only parse new stuff since last
+	load and update graphs
+*	If there's not enough data last 24 hours, the graph doesn't grow. The same
+	number of data points is kept, should grow until 24 hours total is reached.
