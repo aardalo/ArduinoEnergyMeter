@@ -9,13 +9,14 @@
         $row++;
 		$items = count($data);
 		if ($items >0) {
-			$arr[$row] = $data[3]; // nr 4 er kWh/h
+			$arr[$row] = $data[3]; 			// the 4th item in the line (CSV) is number of kWh/h 
 		}
     }
 	fclose($fp);
 	
-	$factor = 1;						// Loggfilen har data hvert 5 sek
-	$limit = $row - $factor * 120*24;		// Leser 120 linjer med faktor intervall, 24x120x5 = 4 timer
+	$factor = 1;							
+	$limit = $row - $factor * (24*60*60/5);	// read 1 days of 5 sec interval data
+	if ($limit < 0) { $limit = 0; };
 	
 	for ($i = $limit; $i < $row; $i = $i + $factor){
 		$ts = date("H:i",$tid - ($row - $i) * 5);
