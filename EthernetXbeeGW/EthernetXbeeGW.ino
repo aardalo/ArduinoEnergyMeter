@@ -2,7 +2,7 @@
 EthernetXbeeGW - Transparent with NTP and logging to MySQL
  
  v01  Øyvind Aardal
-*/
+ */
 
 #include <SPI.h>
 #include <Ethernet.h>
@@ -11,17 +11,19 @@ EthernetXbeeGW - Transparent with NTP and logging to MySQL
 #include <Time.h>
 #include <TimeAlarms.h>
 
-byte mac[] = { 0xDE, 0xAD, 0xDE, 0xEE, 0xEE, 0xED };
+byte mac[] = { 
+  0xDE, 0xAD, 0xDE, 0xEE, 0xEE, 0xED };
 IPAddress ip(192,168,10, 222);
 //IPAddress gateway(192,168,10, 1);
 //IPAddress subnet(255, 255, 255, 0);
 IPAddress ntpserver(192, 43, 244, 18);
 IPAddress sqlserver(192, 168, 10, 10);
 const int NTP_PACKET_SIZE = 48;
+const int LINEBUFFER_SIZE = 180;
 unsigned int localUdpPort = 8888;
 byte buffer[NTP_PACKET_SIZE];
 
-EthernetServer server(80);
+//EthernetServer server(80);
 EthernetClient SQLserver;
 SoftwareSerial xbee(8,9);
 EthernetUDP udp;
@@ -30,7 +32,7 @@ void setup() {
   Serial.begin(9600);
   Serial.println("XBEE-ETH-GW?version=1.0");
   Ethernet.begin(mac, ip);
-  server.begin();
+//  server.begin();
 
   // Set up xbee on softwareserial 
   xbee.begin(9600);
@@ -48,69 +50,78 @@ void setup() {
 char c;
 byte p = 0;
 boolean eol = true;  // means wait for cr then start to read a complete line
-char line[80];       // buffer for string
+char line[LINEBUFFER_SIZE];      // buffer for string
 String cmd;
 
 void loop() {
   if (xbee.available()>0) { // catch xbee traffic and dump to serial
     c = xbee.read();
-    
-    if(c == 10) { // cr detected - read until next lf
+
+    if(c == 10) { // lf detected - read until next cr
       p = 0;
       eol = false;
-    } else if(c == 13) { // lf detected - go for it :-)
+    } 
+    else if(c == 13) { // cr detected - go for it :-) - the p string is ready for parsing
       eol = true;
       line[p] = 0;
-      
-      // temporarily - write old style
-      for(p=0;p<80;p++){
-        if(line[p] == ','){
+
+      if (line[0]=='G' && line[1]=='E' && line[2]=='T' & line[3]==' ') { // already formatted as it should - pass through to web server
+        cmd = String(line);
+      } 
+      else { // not "GET " in first 4 bytes - parse as if it is the old meter module sending data
+        // temporarily - write old style, ignore everything until 1st ,
+        for(p=0;p<LINEBUFFER_SIZE;p++){
+          if(line[p] == ','){
+            p++;
+            break;
+          };
+        }; // p is right after first ,
+
+        cmd = "?count="; 
+        while(line[p]!=',' && p < 80){
+          cmd = cmd + line[p];
           p++;
-          break;
         };
-      }; // p is right after first ,
-      
-      cmd = "?count="; 
-      while(line[p]!=',' && p < 80){
-        cmd = cmd + line[p];
-        p++;
-      };
-      p++; // now, were just behind the next the next , unless p went beyond 80
-      
-      cmd = cmd + "&kwhh=";
-      
-      while(line[p]!=',' && p < 80) {
-        p++; // just skip the next parameter
-      };
-      p++; // now, were just behind the last ,
-      
-      while(line[p]!=0 && p < 80){ // add up until end of line
-        cmd = cmd + line[p]; // 
-        p++;
-      };
-      cmd = "GET /sql/" + cmd + " HTTP/1.0";
-      Serial.println(cmd);
-      // done with the temp stuff - should just write the command to the server
-      if(SQLserver.connect(sqlserver,80)){
-//        Serial.println("Connected to SQL server");
-        SQLserver.println(cmd);
-        SQLserver.println(); // request completed
-        SQLserver.stop();
-      } else {
+        p++; // now, were just behind the next the next , unless p went beyond 80
+
+        cmd = cmd + "&kwhh=";
+
+        while(line[p]!=',' && p < 80) {
+          p++; // just skip the next parameter
+        };
+        p++; // now, were just behind the last ,
+
+        while(line[p]!=0 && p < 80){ // add up until end of line
+          cmd = cmd + line[p]; // 
+          p++;
+        };
+        cmd = "GET /sql/" + cmd + " HTTP/1.0";
+        Serial.println(cmd);
+        // done with the temp stuff - should just write the command to the server
+      }
+
+      if(SQLserver.connect(sqlserver,80)){  // connect to SQL server 
+        SQLserver.println(cmd);             // send command to SQL server
+        SQLserver.println();                // request completed
+        SQLserver.stop(); 
+      } 
+      else {
         Serial.println("Connection to SQL server failed");
       };
-      
+
       p = 0;
-    } else { // it's not neither cr nor lf so continue
+    } 
+    else { // it's not neither cr nor lf so continue
       line[p] = c;
       p++;
-      server.write(c);
-      Serial.write(c);
+//      server.write(c);
+//      Serial.write(c);
     };
   };
-    
+
+  /* Try to get by without acting as server
   EthernetClient client = server.available();
-  
+
   if(client.connected()){ // if a client is connected
     if(client.available()>0) { // take the input from the client and spread the joy
       c = client.read();
@@ -118,6 +129,8 @@ void loop() {
       Serial.write(c);
     };    
   };
+  */
+  
   Alarm.delay(0); // invoke timers
 }
 
@@ -156,11 +169,11 @@ unsigned long getNtpTime() {
     Serial.print(".");
     tries--;
     if ((tries % 10) == 0) {
-        sendNTPpacket(ntpserver); // try to send the NTP packet again, every 10th try, = second
-        Serial.print("!");
+      sendNTPpacket(ntpserver); // try to send the NTP packet again, every 10th try, = second
+      Serial.print("!");
     };
   };
-  
+
   if(tries>0 && udp.parsePacket()){
     Serial.println("Response received");
     udp.read(buffer,NTP_PACKET_SIZE);
@@ -180,18 +193,19 @@ unsigned long getNtpTime() {
       // In the first 10 minutes of each hour, we'll want a leading '0'
       Serial.print('0');
     };
-    
+
     Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
     Serial.print(':'); 
     if ( (epoch % 60) < 10 ) {
       // In the first 10 seconds of each minute, we'll want a leading '0'
       Serial.print('0');
     };
-    
+
     Serial.println(epoch %60); // print the second
 
     return secsSince1900 - seventyYears;// + adjustDstEurope(epoch);
-  } else {
+  } 
+  else {
     return 0; // means no new time discovered
   };
 
@@ -204,18 +218,18 @@ void broadcastUtcTime(){
     day() + "/" + month() + "/" + year();
   Serial.println(buff);
   xbee.println(buff);
-  server.println(buff);
+//  server.println(buff);
   /*
   Serial.print(hour());
-  printDigits(minute());
-  printDigits(second());
-  Serial.print(" ");
-  Serial.print(day());
-  Serial.print("/");
-  Serial.print(month());
-  Serial.print("/");
-  Serial.print(year());
-  Serial.println(); */
+   printDigits(minute());
+   printDigits(second());
+   Serial.print(" ");
+   Serial.print(day());
+   Serial.print("/");
+   Serial.print(month());
+   Serial.print("/");
+   Serial.print(year());
+   Serial.println(); */
 }
 
 void printDigits(int digits){
@@ -225,5 +239,6 @@ void printDigits(int digits){
     Serial.print('0');
   Serial.print(digits);
 }
+
 
 

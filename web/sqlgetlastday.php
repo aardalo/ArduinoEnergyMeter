@@ -1,7 +1,7 @@
 <?
 include 'dbconfig.php';
 
-mysql_connect(localhost,$user,$password);
+mysql_connect('localhost',$user,$password);
 @mysql_select_db($database) or die("Unable to select database $database");
 
 $beginTime = date("Y-m-d H:i:s", time() - 60*60*24); // last hour
@@ -21,7 +21,7 @@ while ($i < $num) {
 	$kwhh = mysql_result($result,$i,"kwhh");
 
 	$avgkWhh = $avgkWhh + $kwhh;
-	
+
 	if ($i % 17 == 0) { // 17 is every 1 in 17 datapoins = approx 1000 datapoints in a day
 		$timestamp = mysql_result($result,$i,"timestamp");
 		$avgkWhh = round($avgkWhh / 17,2);
@@ -30,7 +30,7 @@ while ($i < $num) {
 		if ($i+1 < $num) echo ",";
 		$avgkWhh = 0;
 	};
-	
+
 	$i++;
 }
 
