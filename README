@@ -59,6 +59,33 @@ Hardware [ENGW]
 ### Wiring of xbee to ethernet gw [ENGW]
 	Ethernet Shield and Xbee Shield stacked
 
+Hardware [ENVM]
+	Arduino Uno R3
+	http://arduino.cc/en/Main/ArduinoBoardUno
+
+	Arduino Wireless Proto Shield
+	http://arduino.cc/en/Main/ArduinoWirelessProtoShield
+
+	Xbee 1mw 802.15.4
+	http://www.sparkfun.com/products/8665
+
+	Sparkfun TMP102 breakout
+	http://www.sparkfun.com/products/9418
+
+	Any old LDR (approx 30k) and a 1k resistor
+
+### Wiring of Environmental Monitor
+	(Based on http://bildr.org/2011/01/tmp102-arduino/)
+	TMP102
+		Connected with CAT5 cable as follows:
+ 		A5->Brown->SCL, GND->Brown/White->GND
+ 		A4->Blue->SDA, 5V->Blue/White->V+
+ 		GND->Orange->ADD0, (not connected)->Orange/White->ALT
+	LDR (not polarized)
+		GND->Green->LDR
+		5V->Resistor->Green/White
+		Between Resistor and Green/White->A3
+
 Hardware [LAMP]
 ---------------
 Any LAMP server - could be a Synology NAS (my setup) or e.g. a Amazon EC2
@@ -66,6 +93,11 @@ server (small ... free for a year).
 	
 Revision History
 ================
+07.03.2012	Fixed minor bugs and added support for "temp" table on MySQL server
+		Also modified the gw to support "wellformed" GETs that will be
+		sent directly to the LAMP server.
+		Fixed graphs so that they grow correctly if missing datapoints.
+		Added environmental monitor that logs light and temperature
 29.02.2012	Added MySQL support. web/sql*.php is called from index.php
 			Added Xbee to Ethernet GW
 05.02.2012	Revised web pages to dynamically update without reload - still rough 
@@ -90,3 +122,4 @@ Known issues
 	load and update graphs
 *	If there's not enough data last 24 hours, the graph doesn't grow. The same
 	number of data points is kept, should grow until 24 hours total is reached.
+	(Resolved 07.03.2012)
