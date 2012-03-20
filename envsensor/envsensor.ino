@@ -34,14 +34,14 @@ void loop(){
     // Check the temperature
     float celsius = getTemperature();     // Read the I2C temp sensor
     dtostrf(celsius,0,2,temp);            // convert float to string, left orientation, 2 decimals
-    loggString = "GET /sql/?table=temp&sensor=utetemp&value=" + String(temp) + " HTTP/1.0"; // assemble logg command to XBEE to ETH GW
+    loggString = "GET /sql/?table=utetemp&value=" + String(temp) + " HTTP/1.0"; // assemble logg command to XBEE to ETH GW
     Serial.println(loggString);           // put it out on the XBEE network
     
     delay(1000);
     
     // Check the ambient light using the LDR
     int ldr = analogRead(A3);
-    loggString = "GET /sql/?table=temp&sensor=lys&value=" + String(ldr) + " HTTP/1.0";
+    loggString = "GET /sql/?table=utelys&value=" + String(ldr) + " HTTP/1.0";
     Serial.println(loggString);
   }
 }

@@ -90,20 +90,63 @@ Hardware [LAMP]
 ---------------
 Any LAMP server - could be a Synology NAS (my setup) or e.g. a Amazon EC2
 server (small ... free for a year). 
+
+Database
+========
+Data Dictionary for MySQL database "power" on localhost
+You must have db config file "dbconfig.php" in same dir as sql*.php:
+
+	<?php
+	$user="insert database username";
+	$password="insert password for user";
+	$database="database name";
+	$table="meter table name";
+	?>
+
+meter
+-----
+Table comments: power meter loggdata
+
+Column 		Type 		Null 	Default
+-----------	-----------	-------	-----------------
+timestamp 	timestamp 	No 		CURRENT_TIMESTAMP 	
+count 		int(11) 	No 		
+kwhh 		float 		No 		
 	
+utelys
+------
+Table comments: lysmåling ute
+
+Column 		Type 		Null 	Default 	
+-----------	-----------	-------	-----------------
+timestamp 	timestamp 	No 		CURRENT_TIMESTAMP 	
+value 		float 		No 		
+
+utetemp
+-------
+Table comments: utetemperatur
+
+Column 		Type 		Null 	Default 	
+-----------	-----------	-------	-----------------
+timestamp 	timestamp 	No 		CURRENT_TIMESTAMP 	
+value 		float 		No 		
+
 Revision History
 ================
+20.03.2012  Added database description
+	Modified environmental sensor to save data to separate tables to make life
+	easyer for my Synology 410 - it was peaking CPU due to inefficient queries
 07.03.2012	Fixed minor bugs and added support for "temp" table on MySQL server
-		Also modified the gw to support "wellformed" GETs that will be
-		sent directly to the LAMP server.
-		Fixed graphs so that they grow correctly if missing datapoints.
-		Added environmental monitor that logs light and temperature
+	Also modified the gw to support "wellformed" GETs that will be
+	sent directly to the LAMP server.
+	Fixed graphs so that they grow correctly if missing datapoints.
+	Added environmental monitor that logs light and temperature
 29.02.2012	Added MySQL support. web/sql*.php is called from index.php
-			Added Xbee to Ethernet GW
+	Added Xbee to Ethernet GW
 05.02.2012	Revised web pages to dynamically update without reload - still rough 
-          	but closer...
+    but closer...
 01.02.2012	Added web pages in php using Google Chart. Inspired by code created 
-          	by https://github.com/HNygard
+    by https://github.com/HNygard
 01.02.2012	Initial version - experimental level - all input highly appreciated
 
 To-do
