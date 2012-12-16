@@ -7,8 +7,8 @@ $table="meter";
 mysql_connect(localhost,$user,$password);
 @mysql_select_db($database) or die("Unable to select database $database");
 
-$beginTime = date("Y-m-d H:m:s", time() - 60*60); // last hour
-$endTime = date("Y-m-d H:m:s");
+$beginTime = date("Y-m-d H:i:s", time() - 60*60); // last hour
+$endTime = date("Y-m-d H:i:s");
 
 echo "endTime: $endTime<br>";
 echo "beginTime: $beginTime<br>";
